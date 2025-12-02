@@ -117,6 +117,7 @@ int main(int argc, const char * const argv[])
         SM_BUILD, SM_COMMIT, SM_DATE, SM_TIME);
 #endif
 
+    printf("boot sm: boot time vars for btime command, refer to monitor_cmd.c\n");
     /* Add to subtract time */
     /* Intentional: used only for debug */
     // coverity[cert_int30_c_violation]

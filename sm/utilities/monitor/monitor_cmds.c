@@ -550,6 +550,32 @@ static int32_t MONITOR_CmdInfo(int32_t argc, const char * const argv[])
         printf("Boot set      = %d\n", passover->imgSetSel + 1U);
     }
 
+    // I'd like to show the bootloader container
+    printf("Container     = %u\n", DEV_SM_RomContainerGet());
+
+    // I'd like to show the CPU boot image info
+    uint64_t cpuBootImgAddr;
+    uint32_t cpuBootImgSel;
+    uint32_t cpuBootImgFlag;
+    if (DEV_SM_RomBootCpuGet(DEV_SM_CPU_M33P, &cpuBootImgAddr, &cpuBootImgSel,
+        &cpuBootImgFlag) == SM_ERR_SUCCESS)
+    {
+        printf("CPU%d Boot Img  = addr:0x%X%08X, sel:%u, flag:%u\n", DEV_SM_CPU_M33P,
+            INT64_H(cpuBootImgAddr), INT64_L(cpuBootImgAddr), cpuBootImgSel, cpuBootImgFlag);
+    }
+    if (DEV_SM_RomBootCpuGet(DEV_SM_CPU_M7P, &cpuBootImgAddr, &cpuBootImgSel,
+        &cpuBootImgFlag) == SM_ERR_SUCCESS)
+    {
+        printf("CPU%d Boot Img  = addr:0x%X%08X, sel:%u, flag:%u\n", DEV_SM_CPU_M7P,
+            INT64_H(cpuBootImgAddr), INT64_L(cpuBootImgAddr), cpuBootImgSel, cpuBootImgFlag);
+    }
+    if (DEV_SM_RomBootCpuGet(DEV_SM_CPU_A55C0, &cpuBootImgAddr, &cpuBootImgSel,
+        &cpuBootImgFlag) == SM_ERR_SUCCESS)
+    {
+        printf("CPU%d Boot Img  = addr:0x%X%08X, sel:%u, flag:%u\n", DEV_SM_CPU_A55C0,
+            INT64_H(cpuBootImgAddr), INT64_L(cpuBootImgAddr), cpuBootImgSel, cpuBootImgFlag);
+    }
+
 #ifdef DEV_SM_FUSE_ECID3
     /* Get ECID from fuses */
     for (uint8_t i = 0U; i < 4U; i++)

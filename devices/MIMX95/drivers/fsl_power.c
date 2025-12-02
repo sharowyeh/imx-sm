@@ -29,6 +29,8 @@
 
 /* Includes */
 
+// include sm.h only for printf
+#include "sm.h"
 #include "fsl_def.h"
 #include "fsl_cpu.h"
 #include "fsl_power.h"

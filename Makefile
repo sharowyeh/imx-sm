@@ -73,11 +73,13 @@ ifneq ($(M),0)
 	INC_LIBC ?= 1
 endif
 INC_LIBC ?= 0
-DEBUG ?= 0
+DEBUG ?= 1
 FLAGS += -DMONITOR_MODE=$(M)
 
 ifeq ($(DEBUG),1)
     FLAGS += -DDEBUG
+	FLAGS += -DDEBUG_LP_HS
+	FLAGS += -DDEBUG_INIT_PRINT_EN
 endif
 
 ifeq ($(INC_LIBC),1)

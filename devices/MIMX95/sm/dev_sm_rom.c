@@ -78,14 +78,32 @@ static bool s_m7AddValid = false;
 /*--------------------------------------------------------------------------*/
 void DEV_SM_RomInit(void)
 {
+    printf("DEBUG: mimx95 dev_sm_rom: DEV_SM_RomInit() called, digprog_device_id=0x%X\n",
+         OSC24M->DIGPROG_DEVICE_ID);
     /* Silicon rev is Ax? */
     if ((OSC24M->DIGPROG_DEVICE_ID & 0xF0U) == 0x10U)
     {
+        uint32_t romPatchVer = DEV_SM_FuseGet(DEV_SM_FUSE_M33_ROM_PATCH_VER);
+        printf("DEBUG: mimx95 dev_sm_rom: romPatchVer=0x%X\n", romPatchVer);
+
+        /* Is M7 powered? */
+        bool pdMixOn = SRC_MixIsPwrSwitchOn(DEV_SM_PD_M7);
+        printf("DEBUG: mimx95 dev_sm_rom: M7 power domain state=%d\n", pdMixOn);
+
+        // only for print out log of M7 reset vector
+        if (pdMixOn) {
+            uint64_t m7Addr;
+            bool m7AddrValid = CPU_ResetVectorGet(DEV_SM_CPU_M7P, &m7Addr);
+            printf("DEBUG: mimx95 dev_sm_rom: M7 is powered, valid=%d, m7addr=0x%X%08X\n",
+                m7AddrValid, INT64_H(m7Addr), INT64_L(m7Addr));
+        } else {
+            printf("DEBUG: mimx95 dev_sm_rom: M7 is not powered\n");
+        }
+
         /* No ROM patch? */
-        if (DEV_SM_FuseGet(DEV_SM_FUSE_M33_ROM_PATCH_VER) == 0x0U)
+        if (romPatchVer == 0x0U)
         {
-            /* Is M7 powered? */
-            if (SRC_MixIsPwrSwitchOn(DEV_SM_PD_M7))
+            if (pdMixOn)
             {
                 /* Load address from reset vector registers */
                 s_m7AddValid = CPU_ResetVectorGet(DEV_SM_CPU_M7P,
@@ -127,6 +145,9 @@ int32_t DEV_SM_RomHandoverGet(const rom_handover_t **handover)
         *handover = ptr;
     }
 
+#ifdef DEBUG
+    printf("DEBUG: mimx95 dev_sm_rom: DEV_SM_RomHandoverGet() status=0x%X\n", status);
+#endif
     /* Return status */
     return status;
 }
@@ -163,6 +184,23 @@ int32_t DEV_SM_RomPassoverGet(const rom_passover_t **passover)
         *passover = ptr;
     }
 
+#ifdef DEBUG
+    printf("DEBUG: mimx95 dev_sm_rom: DEV_SM_RomPassoverGet() status=0x%X\n", status);
+    if (status == SM_ERR_SUCCESS)
+    {
+        printf("  size=0x%X\n", ptr->size);
+        printf("  ver=0x%X\n", ptr->ver);
+        printf("  bootMode=0x%X\n", ptr->bootMode);
+        printf("  cardAddrMode=0x%X\n", ptr->cardAddrMode);
+        printf("  bootStage=0x%X\n", ptr->bootStage);
+        printf("  imgSetSel=0x%X\n", ptr->imgSetSel);
+        printf("  romVersion=0x%X\n", ptr->romVersion);
+        printf("  bootDevType=0x%X\n", ptr->bootDevType);
+        printf("  devPageSize=0x%X\n", ptr->devPageSize);
+        printf("  cntHeaderOfs=0x%X\n", ptr->cntHeaderOfs);
+        printf("  imgOfs=0x%X\n", ptr->imgOfs);
+    }
+#endif
     /* Return status */
     return status;
 }
@@ -217,11 +255,17 @@ int32_t DEV_SM_RomBootImgNGet(uint32_t type, uint32_t *cpuId,
         *mSel = ROM_HANDOVER_IMG_MSEL(img->flags);
         *flags = ROM_HANDOVER_IMG_FLAGS(img->flags);
         *addr = img->addr;
-
+#ifdef DEBUG
+        printf("DEBUG: mimx95 dev_sm_rom: DEV_SM_RomBootImgNGet() imageIdx=%d cpuId=0x%X addr=0x%X%08X mSel=0x%X flags=0x%X\n",
+            s_imageIdx, *cpuId, INT64_H(*addr), INT64_L(*addr), *mSel, *flags);
+#endif
         /* Fix for ROM address patch */
         if (s_m7AddValid && (*cpuId == DEV_SM_CPU_M7P))
         {
             *addr = s_m7Addr;
+#ifdef DEBUG
+            printf("DEBUG: mimx95 dev_sm_rom: DEV_SM_RomBootImgNGet() patched M7 addr=0x%X%08X\n", INT64_H(*addr), INT64_L(*addr));
+#endif
         }
 
         /* Next image on next call */
@@ -285,7 +329,9 @@ int32_t DEV_SM_RomStageSet(uint32_t stage)
     /* Configure stage */
     temp = SRC_GEN->GPR16 & ~ROM_STAGE_MASK;
     SRC_GEN->GPR16 = temp | ((stage << ROM_STAGE_SHIFT) & ROM_STAGE_MASK);
-
+#ifdef DEBUG
+    printf("DEBUG: mimx95 dev_sm_rom: DEV_SM_RomStageSet() stage=0x%X, status=0x%X\n", stage, status);
+#endif
     /* Return status */
     return status;
 }
@@ -321,7 +367,9 @@ int32_t DEV_SM_RomContainerSet(uint32_t container)
     {
         status = SM_ERR_INVALID_PARAMETERS;
     }
-
+#ifdef DEBUG
+    printf("DEBUG: mimx95 dev_sm_rom: DEV_SM_RomContainerSet() container=0x%X, status=0x%X\n", container, status);
+#endif
     /* Return status */
     return status;
 }
