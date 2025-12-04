@@ -62,6 +62,9 @@ int32_t LMM_CpuInit(void)
 {
     int32_t status = SM_ERR_SUCCESS;
 
+#ifdef DEBUG
+    printf("DEBUG: lmm/lmm_cpu: LMM_CpuInit() will loop cpu 0-9 to get boot address\n");
+#endif
     /* Loop over CPUs */
     for (uint32_t cpuId = 0U; cpuId < SM_NUM_CPU; cpuId++)
     {
@@ -80,6 +83,23 @@ int32_t LMM_CpuInit(void)
             s_bootFlags[cpuId] = false;
         }
     }
+
+#ifdef DEBUG
+    printf("DEBUG: lmm/lmm_cpu: LMM_CpuInit() collected address:\n");
+    for (uint32_t cpuId = 0U; cpuId < SM_NUM_CPU; cpuId++)
+    {
+        if (s_bootFlags[cpuId])
+        {
+            printf("  CPU%d boot addr=0x%X_%08X\n", cpuId,
+                INT64_H(s_bootVector[cpuId]),
+                INT64_L(s_bootVector[cpuId]));
+        }
+        else
+        {
+            printf("  CPU%d boot addr=not set\n", cpuId);
+        }
+    }
+#endif
 
     /* Return status */
     return status;
@@ -146,6 +166,10 @@ int32_t LMM_CpuStart(uint32_t lmId, uint32_t cpuId)
     }
 
     SM_TEST_MODE_ERR(SM_TEST_MODE_LMM_LVL1, SM_ERR_TEST)
+
+#ifdef DEBUG
+    printf("DEBUG: lmm/lmm_cpu: LMM_CpuStart() started CPU%d, status=0x%X\n", cpuId, status);
+#endif
 
     /* Return status */
     return status;

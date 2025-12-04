@@ -140,7 +140,7 @@ int32_t BRD_SM_Init(int argc, const char * const argv[], uint32_t *mSel)
         == SM_ERR_SUCCESS)
     {
         *mSel = ms;
-        printf("DEBUG: brd_sm_init: got m33 boot sel=%u addr=0x%X%08X", ms, INT64_H(addr), INT64_L(addr));
+        printf("DEBUG: BRD_SM_Init: got m33 boot sel=%u addr=0x%X_%08X\n", ms, INT64_H(addr), INT64_L(addr));
     }
 
     /* Initialize devices connected to serial buses (PMIC, IOExp, etc) */

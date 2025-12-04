@@ -94,7 +94,7 @@ void DEV_SM_RomInit(void)
         if (pdMixOn) {
             uint64_t m7Addr;
             bool m7AddrValid = CPU_ResetVectorGet(DEV_SM_CPU_M7P, &m7Addr);
-            printf("DEBUG: mimx95 dev_sm_rom: M7 is powered, valid=%d, m7addr=0x%X%08X\n",
+            printf("DEBUG: mimx95 dev_sm_rom: M7 is powered, valid=%d, m7addr=0x%X_%08X\n",
                 m7AddrValid, INT64_H(m7Addr), INT64_L(m7Addr));
         } else {
             printf("DEBUG: mimx95 dev_sm_rom: M7 is not powered\n");
@@ -146,7 +146,25 @@ int32_t DEV_SM_RomHandoverGet(const rom_handover_t **handover)
     }
 
 #ifdef DEBUG
-    printf("DEBUG: mimx95 dev_sm_rom: DEV_SM_RomHandoverGet() status=0x%X\n", status);
+    // this will be annoying from loopping RomBootImgNGet :)
+    printf("DEBUG: mimx95 dev_sm_rom: DEV_SM_RomHandoverGet() status=0x%X from 0x%X\n", status, HANDOVER_BASE);
+    if (status == SM_ERR_SUCCESS)
+    {
+        printf("  barker=0x%X\n", ptr->barker);
+        printf("  ver=0x%X\n", ptr->ver);
+        printf("  size=0x%X\n", ptr->size);
+        printf("  num=0x%X\n", ptr->num);
+        printf("  flags=0x%X\n", ptr->flags);
+        printf("  img[0]= cpu:0x%X addr:0x%X_%08X, flags:0x%X\n",
+            ptr->img[0].cpu, INT64_H(ptr->img[0].addr), INT64_L(ptr->img[0].addr),
+            ptr->img[0].flags);
+        printf("  img[1]= cpu:0x%X addr:0x%X_%08X, flags:0x%X\n",
+            ptr->img[1].cpu, INT64_H(ptr->img[1].addr), INT64_L(ptr->img[1].addr),
+            ptr->img[1].flags);
+        printf("  img[2]= cpu:0x%X addr:0x%X_%08X, flags:0x%X\n",
+            ptr->img[2].cpu, INT64_H(ptr->img[2].addr), INT64_L(ptr->img[2].addr),
+            ptr->img[2].flags);
+    }
 #endif
     /* Return status */
     return status;
@@ -255,8 +273,9 @@ int32_t DEV_SM_RomBootImgNGet(uint32_t type, uint32_t *cpuId,
         *mSel = ROM_HANDOVER_IMG_MSEL(img->flags);
         *flags = ROM_HANDOVER_IMG_FLAGS(img->flags);
         *addr = img->addr;
-#ifdef DEBUG
-        printf("DEBUG: mimx95 dev_sm_rom: DEV_SM_RomBootImgNGet() imageIdx=%d cpuId=0x%X addr=0x%X%08X mSel=0x%X flags=0x%X\n",
+#ifdef DEBUG_VERBOSE
+        // I had monitor cmd shows this info, so keep it verbose here
+        printf("DEBUG: mimx95 dev_sm_rom: DEV_SM_RomBootImgNGet() imageIdx=%d cpuId=0x%X addr=0x%X_%08X mSel=0x%X flags=0x%X\n",
             s_imageIdx, *cpuId, INT64_H(*addr), INT64_L(*addr), *mSel, *flags);
 #endif
         /* Fix for ROM address patch */
@@ -264,7 +283,8 @@ int32_t DEV_SM_RomBootImgNGet(uint32_t type, uint32_t *cpuId,
         {
             *addr = s_m7Addr;
 #ifdef DEBUG
-            printf("DEBUG: mimx95 dev_sm_rom: DEV_SM_RomBootImgNGet() patched M7 addr=0x%X%08X\n", INT64_H(*addr), INT64_L(*addr));
+            // can patch boot address from s_m7Addr
+            printf("DEBUG: mimx95 dev_sm_rom: DEV_SM_RomBootImgNGet() patched M7 addr=0x%X_%08X\n", INT64_H(*addr), INT64_L(*addr));
 #endif
         }
 
@@ -302,6 +322,10 @@ int32_t DEV_SM_RomBootCpuGet(uint32_t cpuId, uint64_t *resetVector,
         /* Found? */
         if (cpuId == cpu)
         {
+#ifdef DEBUG
+            printf("DEBUG: mimx95 dev_sm_rom: DEV_SM_RomBootCpuGet() cpuId=0x%X type 0x%X(ROM_IMG_EXEC) found\n",
+                cpuId, DEV_SM_ROM_IMG_EXEC);
+#endif
             /* Return data */
             *resetVector = addr;
             *mSel = sel;

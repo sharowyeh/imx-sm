@@ -560,19 +560,19 @@ static int32_t MONITOR_CmdInfo(int32_t argc, const char * const argv[])
     if (DEV_SM_RomBootCpuGet(DEV_SM_CPU_M33P, &cpuBootImgAddr, &cpuBootImgSel,
         &cpuBootImgFlag) == SM_ERR_SUCCESS)
     {
-        printf("CPU%d Boot Img  = addr:0x%X%08X, sel:%u, flag:%u\n", DEV_SM_CPU_M33P,
+        printf("CPU%d Boot Img  = addr:0x%X_%08X, sel:%u, flag:%u\n", DEV_SM_CPU_M33P,
             INT64_H(cpuBootImgAddr), INT64_L(cpuBootImgAddr), cpuBootImgSel, cpuBootImgFlag);
     }
     if (DEV_SM_RomBootCpuGet(DEV_SM_CPU_M7P, &cpuBootImgAddr, &cpuBootImgSel,
         &cpuBootImgFlag) == SM_ERR_SUCCESS)
     {
-        printf("CPU%d Boot Img  = addr:0x%X%08X, sel:%u, flag:%u\n", DEV_SM_CPU_M7P,
+        printf("CPU%d Boot Img  = addr:0x%X_%08X, sel:%u, flag:%u\n", DEV_SM_CPU_M7P,
             INT64_H(cpuBootImgAddr), INT64_L(cpuBootImgAddr), cpuBootImgSel, cpuBootImgFlag);
     }
     if (DEV_SM_RomBootCpuGet(DEV_SM_CPU_A55C0, &cpuBootImgAddr, &cpuBootImgSel,
         &cpuBootImgFlag) == SM_ERR_SUCCESS)
     {
-        printf("CPU%d Boot Img  = addr:0x%X%08X, sel:%u, flag:%u\n", DEV_SM_CPU_A55C0,
+        printf("CPU%d Boot Img  = addr:0x%X_%08X, sel:%u, flag:%u\n", DEV_SM_CPU_A55C0,
             INT64_H(cpuBootImgAddr), INT64_L(cpuBootImgAddr), cpuBootImgSel, cpuBootImgFlag);
     }
 
@@ -695,6 +695,9 @@ static int32_t MONITOR_CmdEleInfo(int32_t argc, const char * const argv[])
     ele_info_t info = { 0 };
 
     ELE_FwStatusGet(&stat);
+#ifdef DEBUG
+    printf("DEBUG: MONITOR_CmdEleInfo: ELE_FwStatusGet stat=0x%X\n", stat);
+#endif
 
     if (g_eleStatus == SM_ERR_SUCCESS)
     {
@@ -707,6 +710,9 @@ static int32_t MONITOR_CmdEleInfo(int32_t argc, const char * const argv[])
 
         /* Display ELE ROM version */
         ELE_RomIdGet(&id, &commit, &dirty);
+#ifdef DEBUG
+        printf("DEBUG: MONITOR_CmdEleInfo: ELE_RomIdGet id=0x%06X commit=0x%08X dirty=%u\n", id, commit, dirty);
+#endif
         if (g_eleStatus == SM_ERR_SUCCESS)
         {
             printf("ELE ROM ID     = 0x%06X", id);
