@@ -187,6 +187,11 @@ int32_t LMM_Boot(void)
                     /* Trigger SWI handler */
                     SWI_Trigger();
 
+#ifdef DEBUG
+                    printf("DEBUG: LMM_Boot: booted order=%u LM%u (skip=%u)\n",
+                        bootOrder, lmId, s_bootSkip);
+#endif
+
                     /* Collect status */
                     status = s_bootStatus;
                 }
@@ -257,6 +262,11 @@ int32_t LMM_LmNameGet(uint32_t lmId, uint32_t lm, string *lmNameAddr,
 
     SM_TEST_MODE_ERR(SM_TEST_MODE_LMM_LVL2, SM_ERR_TEST)
 
+#ifdef DEBUG
+    printf("DEBUG: LMM_LmNameGet: lmId=%u name=%s\n", lmId,
+        g_lmmConfig[lm].name);
+#endif
+
     /* Return status */
     return status;
 }
@@ -280,6 +290,10 @@ int32_t LMM_RpcReset(uint32_t lmId)
             status = SM_ERR_INVALID_PARAMETERS;
             break;
     }
+
+#ifdef DEBUG
+    printf("DEBUG: LMM_RpcReset: lmId=%u rpcInst=%u status=0x%X\n", lmId, g_lmmConfig[lmId].rpcInst, status);
+#endif
 
     /* Return status */
     return status;
@@ -393,6 +407,10 @@ string LMM_CfgInfoGet(uint32_t *mSel)
 
     /* Return mSel value */
     *mSel = s_mSel;
+
+#ifdef DEBUG
+    printf("DEBUG: LMM_CfgInfoGet: mSel=%u cfgName=%s\n", *mSel, cfgName);
+#endif
 
     /* Return cfg file name */
     return cfgName;

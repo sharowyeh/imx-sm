@@ -109,6 +109,11 @@ int32_t DEV_SM_SystemInit(void)
     BLK_CTRL_S_AONMIX->M7_CFG |=
         (BLK_CTRL_S_AONMIX_M7_CFG_CORECLK_FORCE_ON_MASK |
             BLK_CTRL_S_AONMIX_M7_CFG_HCLK_FORCE_ON_MASK);
+#ifdef DEBUG
+    // bit 2:0 is M7 TCM_SIZE, refer to RM Part3 Always-on(AON) domain 32.5.1.42
+    printf("DEBUG: mimx95 dev_sm_system: DEV_SM_SystemInit() M7_CFG=0x%X\n",
+        BLK_CTRL_S_AONMIX->M7_CFG);
+#endif
 
     /* Configure PMIC standby timings */
     pmicAckCtrl = GPC_GLOBAL->GPC_PMIC_STBY_ACK_CTRL;
