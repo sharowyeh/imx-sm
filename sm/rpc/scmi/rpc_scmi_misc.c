@@ -1604,6 +1604,11 @@ static int32_t MiscCfgInfo(const scmi_caller_t *caller,
 
         /* Get info */
         cfgName = LMM_CfgInfoGet(&(out->mSel));
+#ifdef DEBUG
+        /* Log the config name */
+        printf("DEBUG: MiscCfgInfo() lmId=%u, seenvId=%u, mSel=0x%08X, cfgName=%s\n",
+            caller->lmId, caller->seenvId, out->mSel, (const char*) cfgName);
+#endif
 
         /* Copy out cfg name */
         // coverity[misra_c_2012_rule_7_4_violation]

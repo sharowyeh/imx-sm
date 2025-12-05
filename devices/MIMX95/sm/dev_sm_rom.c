@@ -145,25 +145,25 @@ int32_t DEV_SM_RomHandoverGet(const rom_handover_t **handover)
         *handover = ptr;
     }
 
-#ifdef DEBUG
+#ifdef DEBUG_VERBOSE
     // this will be annoying from loopping RomBootImgNGet :)
     printf("DEBUG: mimx95 dev_sm_rom: DEV_SM_RomHandoverGet() status=0x%X from 0x%X\n", status, HANDOVER_BASE);
     if (status == SM_ERR_SUCCESS)
     {
-        printf("  barker=0x%X\n", ptr->barker);
-        printf("  ver=0x%X\n", ptr->ver);
-        printf("  size=0x%X\n", ptr->size);
-        printf("  num=0x%X\n", ptr->num);
-        printf("  flags=0x%X\n", ptr->flags);
+        printf("  barker=0x%X\n", ptr->barker); //0xC0FFEE16 HANDOVER_BARKER
+        printf("  ver=0x%X\n", ptr->ver);     // 0x2 HANDOVER_VER
+        printf("  size=0x%X\n", ptr->size);   // 0x100
+        printf("  num=0x%X\n", ptr->num);     // 0x3
+        printf("  flags=0x%X\n", ptr->flags); // 0x113
         printf("  img[0]= cpu:0x%X addr:0x%X_%08X, flags:0x%X\n",
             ptr->img[0].cpu, INT64_H(ptr->img[0].addr), INT64_L(ptr->img[0].addr),
-            ptr->img[0].flags);
+            ptr->img[0].flags); // cpu=1
         printf("  img[1]= cpu:0x%X addr:0x%X_%08X, flags:0x%X\n",
             ptr->img[1].cpu, INT64_H(ptr->img[1].addr), INT64_L(ptr->img[1].addr),
-            ptr->img[1].flags);
+            ptr->img[1].flags); // cpu=b?
         printf("  img[2]= cpu:0x%X addr:0x%X_%08X, flags:0x%X\n",
             ptr->img[2].cpu, INT64_H(ptr->img[2].addr), INT64_L(ptr->img[2].addr),
-            ptr->img[2].flags);
+            ptr->img[2].flags); // cpu=2
     }
 #endif
     /* Return status */
@@ -202,21 +202,22 @@ int32_t DEV_SM_RomPassoverGet(const rom_passover_t **passover)
         *passover = ptr;
     }
 
-#ifdef DEBUG
+#ifdef DEBUG_VERBOSE
+    // would be from DEV_SM_Init and LMM_MiscRomPassoverGet mostly
     printf("DEBUG: mimx95 dev_sm_rom: DEV_SM_RomPassoverGet() status=0x%X\n", status);
     if (status == SM_ERR_SUCCESS)
     {
-        printf("  size=0x%X\n", ptr->size);
-        printf("  ver=0x%X\n", ptr->ver);
-        printf("  bootMode=0x%X\n", ptr->bootMode);
-        printf("  cardAddrMode=0x%X\n", ptr->cardAddrMode);
-        printf("  bootStage=0x%X\n", ptr->bootStage);
-        printf("  imgSetSel=0x%X\n", ptr->imgSetSel);
-        printf("  romVersion=0x%X\n", ptr->romVersion);
-        printf("  bootDevType=0x%X\n", ptr->bootDevType);
-        printf("  devPageSize=0x%X\n", ptr->devPageSize);
-        printf("  cntHeaderOfs=0x%X\n", ptr->cntHeaderOfs);
-        printf("  imgOfs=0x%X\n", ptr->imgOfs);
+        printf("  size=0x%X\n", ptr->size); // 0x80
+        printf("  ver=0x%X\n", ptr->ver);   // 0x2
+        printf("  bootMode=0x%X\n", ptr->bootMode); // 0x02
+        printf("  cardAddrMode=0x%X\n", ptr->cardAddrMode); // 0x1(because i use SD card)
+        printf("  bootStage=0x%X\n", ptr->bootStage); // 0x6
+        printf("  imgSetSel=0x%X\n", ptr->imgSetSel); // 0x0
+        printf("  romVersion=0x%X\n", ptr->romVersion); // 0x11
+        printf("  bootDevType=0x%X\n", ptr->bootDevType); // 0x1(SD/eMMC)
+        printf("  devPageSize=0x%X\n", ptr->devPageSize); // 512 bytes(RM Chapter 13.10 PAGE_SIZE_OF_BOOT_DEVICE)
+        printf("  cntHeaderOfs=0x%X\n", ptr->cntHeaderOfs); // 0x0
+        printf("  imgOfs=0x%X\n", ptr->imgOfs); // 0x8000(RM Chapter 13.15.2.4 1st boot partition offset)
     }
 #endif
     /* Return status */
@@ -323,8 +324,11 @@ int32_t DEV_SM_RomBootCpuGet(uint32_t cpuId, uint64_t *resetVector,
         if (cpuId == cpu)
         {
 #ifdef DEBUG
-            printf("DEBUG: mimx95 dev_sm_rom: DEV_SM_RomBootCpuGet() cpuId=0x%X type 0x%X(ROM_IMG_EXEC) found\n",
-                cpuId, DEV_SM_ROM_IMG_EXEC);
+            // NOTE: `cpu` `sel` and `fi` from handover rom img's flags
+            printf("DEBUG: mimx95 dev_sm_rom: DEV_SM_RomBootCpuGet() cpuId=0x%X founded\n", cpuId);
+            printf("  type=0x%X(DEV_SM_ROM_IMG_EXEC)\n", DEV_SM_ROM_IMG_EXEC);
+            printf("  addr=0x%X_%08X\n", INT64_H(addr), INT64_L(addr));
+            printf("  mSel=0x%X, flags=0x%X\n", sel, fl);
 #endif
             /* Return data */
             *resetVector = addr;

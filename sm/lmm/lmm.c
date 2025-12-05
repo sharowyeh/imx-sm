@@ -105,6 +105,10 @@ int32_t LMM_Init(uint32_t *mSel, uint32_t lmmInitFlags)
         /* Loop over LMs */
         for (uint32_t lmId = 0U; lmId < SM_NUM_LM; lmId++)
         {
+#ifdef DEBUG
+            printf("DEBUG: LMM_Init: initializing LM%u rpcType=%u rpcInst=%u\n",
+                lmId, g_lmmConfig[lmId].rpcType, g_lmmConfig[lmId].rpcInst);
+#endif
             /* Init RPC */
             switch (g_lmmConfig[lmId].rpcType)
             {
@@ -152,6 +156,10 @@ int32_t LMM_Boot(void)
         mSel = 0U;
     }
 
+#ifdef DEBUG
+    printf("DEBUG: LMM_Boot() mode select=%u init flags=0x%X\n", mSel, lmmInitFlags);
+#endif
+
     /* Inform LM system of mode select */
     status = LMM_SystemModeSelSet(mSel);
 
@@ -188,7 +196,7 @@ int32_t LMM_Boot(void)
                     SWI_Trigger();
 
 #ifdef DEBUG
-                    printf("DEBUG: LMM_Boot: booted order=%u LM%u (skip=%u)\n",
+                    printf("DEBUG: LMM_Boot() booted order=%u LM%u (skip=%u)\n",
                         bootOrder, lmId, s_bootSkip);
 #endif
 
@@ -224,6 +232,9 @@ int32_t LMM_PostBoot(void)
 {
     uint32_t lmmInitFlags = s_lmmInitFlags;
 
+#ifdef DEBUG
+    printf("DEBUG: LMM_PostBoot() init flags=0x%X, calls to DEV_SM_SystemPostBoot then done\n", lmmInitFlags);
+#endif
     /* Just passthru to board/device */
     return SM_SYSTEMPOSTBOOT(s_mSel, lmmInitFlags);
 }
@@ -263,7 +274,7 @@ int32_t LMM_LmNameGet(uint32_t lmId, uint32_t lm, string *lmNameAddr,
     SM_TEST_MODE_ERR(SM_TEST_MODE_LMM_LVL2, SM_ERR_TEST)
 
 #ifdef DEBUG
-    printf("DEBUG: LMM_LmNameGet: lmId=%u name=%s\n", lmId,
+    printf("DEBUG: LMM_LmNameGet: lmId=%u lm=%u name=%s\n", lmId, lm,
         g_lmmConfig[lm].name);
 #endif
 
@@ -408,8 +419,8 @@ string LMM_CfgInfoGet(uint32_t *mSel)
     /* Return mSel value */
     *mSel = s_mSel;
 
-#ifdef DEBUG
-    printf("DEBUG: LMM_CfgInfoGet: mSel=%u cfgName=%s\n", *mSel, cfgName);
+#ifdef DEBUG_VERBOSE
+    printf("DEBUG: LMM_CfgInfoGet() mSel=%u cfgName=%s\n", *mSel, cfgName);
 #endif
 
     /* Return cfg file name */

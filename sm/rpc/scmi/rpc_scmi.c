@@ -150,6 +150,10 @@ int32_t RPC_SCMI_Init(uint8_t scmiInst)
         }
     }
 
+#ifdef DEBUG
+    printf("DEBUG: RPC_SCMI_Init() scmiInst=%u status=0x%X\n", scmiInst, status);
+#endif
+
     return status;
 }
 

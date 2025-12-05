@@ -168,7 +168,7 @@ int32_t LMM_CpuStart(uint32_t lmId, uint32_t cpuId)
     SM_TEST_MODE_ERR(SM_TEST_MODE_LMM_LVL1, SM_ERR_TEST)
 
 #ifdef DEBUG
-    printf("DEBUG: lmm/lmm_cpu: LMM_CpuStart() started CPU%d, status=0x%X\n", cpuId, status);
+    printf("DEBUG: lmm/lmm_cpu: LMM_CpuStart() started LM%u CPU%u, status=0x%X\n", lmId, cpuId, status);
 #endif
 
     /* Return status */

@@ -123,6 +123,10 @@ int32_t LMM_SystemModeSelSet(uint32_t mSel)
                 && (s_lmmStop[idx].ss == LMM_SS_CPU))
             {
                 s_cpuLm[s_lmmStop[idx].rsrc] = s_lmmStop[idx].lmId;
+#ifdef DEBUG
+                printf("DEBUG: lmm/lmm_sys: LMM_SystemModeSelSet() cpuLmIdx(rsrc)=%d mapped to LM%d\n",
+                    s_lmmStop[idx].rsrc, s_lmmStop[idx].lmId);
+#endif
             }
         }
     }
@@ -556,6 +560,10 @@ int32_t LMM_SystemLmPowerOn(uint32_t lmId, uint32_t agentId, uint32_t pwrLm)
 
     SM_TEST_MODE_ERR(SM_TEST_MODE_LMM_LVL1, SM_ERR_TEST)
 
+#ifdef DEBUG
+    printf("DEBUG: lmm/lmm_sys: LMM_SystemLmPowerOn() powered on LM%d, agentId=0x%X, status=0x%X\n", pwrLm, agentId, status);
+#endif
+
     /* Return status */
     return status;
 }
@@ -590,6 +598,10 @@ int32_t LMM_SystemLmBoot(uint32_t lmId, uint32_t agentId, uint32_t bootLm,
     }
 
     SM_TEST_MODE_ERR(SM_TEST_MODE_LMM_LVL1, SM_ERR_TEST)
+
+#ifdef DEBUG
+    printf("DEBUG: lmm/lmm_sys: LMM_SystemLmBoot() booted LM%d, agentId=0x%X, status=0x%X\n", bootLm, agentId, status);
+#endif
 
     /* Return status */
     return status;
@@ -640,6 +652,10 @@ int32_t LMM_SystemLmShutdown(uint32_t lmId, uint32_t agentId,
     }
 
     SM_TEST_MODE_ERR(SM_TEST_MODE_LMM_LVL1, SM_ERR_TEST)
+
+#ifdef DEBUG
+    printf("DEBUG: lmm/lmm_sys: LMM_SystemLmShutdown() shutdown LM%d, agentId=0x%X, status=0x%X\n", shutdownLm, agentId, status);
+#endif
 
     /* Return status */
     return status;
@@ -1131,6 +1147,10 @@ static int32_t LM_ProcessStart(uint32_t lmId, uint32_t start, bool cpu)
 {
     int32_t status = SM_ERR_SUCCESS;
     uint32_t idx = start;
+
+#ifdef DEBUG
+    printf("DEBUG: lmm/lmm_sys: LM_ProcessStart() starting LM%d, startIdx=%u iscpu=%d\n", lmId, start, cpu ? 1 : 0);
+#endif
 
     /* Loop over start list to load reset vectors */
     while ((status == SM_ERR_SUCCESS) && (idx < SM_LM_NUM_START))

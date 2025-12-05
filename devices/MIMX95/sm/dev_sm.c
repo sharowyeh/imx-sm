@@ -99,6 +99,11 @@ int32_t DEV_SM_Init(uint32_t bootPerfLevel, uint32_t runPerfLevel)
         /* Release M7 */
         ELE_EnableAuxRequest(0xBU);
         status = g_eleStatus;
+#ifdef DEBUG
+        // 0xB?? DEV_SM_PD_A55P?? is A55 platform domain
+        printf("DEBUG: mimx95 dev_sm: DEV_SM_Init() PD_M7 is power on, ELE_ENABLE_AUX_REQ to 0xB, status=0x%X\n",
+            status);
+#endif
     }
 #endif
 
@@ -121,6 +126,9 @@ int32_t DEV_SM_Init(uint32_t bootPerfLevel, uint32_t runPerfLevel)
     /* Get ROM passover data */
     if (status == SM_ERR_SUCCESS)
     {
+#ifdef DEBUG
+        printf("DEBUG: mimx95 dev_sm: DEV_SM_Init() passover boot ROM info, (offset 0x8000)\n");
+#endif
         status = DEV_SM_RomPassoverGet(&romPassover);
     }
 

@@ -342,8 +342,13 @@ int32_t DEV_SM_SystemPostBoot(uint32_t mSel, uint32_t initFlags)
     /* Disable interrupts */
     priMask = DisableGlobalIRQ();
 
+    bool a55pIsOn = SRC_MixIsPwrSwitchOn(PWR_MIX_SLICE_IDX_A55P);
+#ifdef DEBUG
+    printf("DEBUG: mimx95 dev_sm_system: DEV_SM_SystemPostBoot() a55pIsOn=%d\n",
+        a55pIsOn ? 1 : 0);
+#endif
     /* Check AP platform */
-    if (!SRC_MixIsPwrSwitchOn(PWR_MIX_SLICE_IDX_A55P))
+    if (!a55pIsOn)
     {
         /* Turn off AP power supply */
         status = BRD_SM_SupplyModeSet(PS_VDD_ARM, DEV_SM_VOLT_MODE_OFF);

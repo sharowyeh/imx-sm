@@ -104,6 +104,11 @@ int32_t MB_MU_Init(uint8_t inst, uint8_t db, bool noIrq, uint32_t initCount)
                 << db);
     }
 
+#ifdef DEBUG
+    // debug mailbox message unit init
+    printf("DEBUG: sm/rpc/mb_mu/mb_mu.c: MB_MU_Init: inst=%u db=%u noIrq=%u initCount=%u status=0x%X\n",
+        inst, db, noIrq ? 1U : 0U, initCount, status);
+#endif
     /* Return status */
     return status;
 }
