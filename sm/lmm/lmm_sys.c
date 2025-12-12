@@ -168,6 +168,10 @@ int32_t LMM_SystemRstComp(const lmm_rst_rec_t *resetRec)
 int32_t LMM_SystemShutdown(uint32_t lmId, uint32_t agentId,
     bool graceful, const lmm_rst_rec_t *shutdownRec)
 {
+#ifdef DEBUG
+    printf("DEBUG: lmm/lmm_sys: LMM_SystemShutdown() lmId=%u agentId=%u graceful=%d\n",
+        lmId, agentId, graceful ? 1 : 0);
+#endif
     int32_t status = SM_ERR_SUCCESS;
     lmm_rpc_trigger_t trigger =
     {
@@ -226,6 +230,11 @@ int32_t LMM_SystemShutdown(uint32_t lmId, uint32_t agentId,
 int32_t LMM_SystemReset(uint32_t lmId, uint32_t agentId, bool graceful,
     const lmm_rst_rec_t *resetRec)
 {
+#ifdef DEBUG
+    // may be from bl31 psci -> rpc scmi sys -> here
+    printf("DEBUG: lmm/lmm_sys: LMM_SystemReset() lmId=%u agentId=%u graceful=%d\n",
+        lmId, agentId, graceful ? 1 : 0);
+#endif
     int32_t status = SM_ERR_SUCCESS;
     lmm_rpc_trigger_t trigger =
     {
@@ -284,6 +293,10 @@ int32_t LMM_SystemReset(uint32_t lmId, uint32_t agentId, bool graceful,
 /*--------------------------------------------------------------------------*/
 int32_t LMM_SystemSuspend(uint32_t lmId, uint32_t agentId)
 {
+#ifdef DEBUG
+    printf("DEBUG: lmm/lmm_sys: LMM_SystemSuspend() lmId=%u agentId=%u\n",
+        lmId, agentId);
+#endif
     int32_t status = SM_ERR_SUCCESS;
     lmm_rpc_trigger_t trigger =
     {
@@ -312,6 +325,10 @@ int32_t LMM_SystemSuspend(uint32_t lmId, uint32_t agentId)
 /*--------------------------------------------------------------------------*/
 int32_t LMM_SystemWake(uint32_t lmId, uint32_t agentId)
 {
+#ifdef DEBUG
+    printf("DEBUG: lmm/lmm_sys: LMM_SystemWake() lmId=%u agentId=%u\n",
+        lmId, agentId);
+#endif
     int32_t status = SM_ERR_SUCCESS;
     lmm_rpc_trigger_t trigger =
     {
@@ -716,6 +733,11 @@ int32_t LMM_SystemLmReset(uint32_t lmId, uint32_t agentId, uint32_t resetLm,
         }
     }
 
+#ifdef DEBUG
+    printf("DEBUG: lmm/lmm_sys: LMM_SystemLmReset() reset LM%d, agentId=0x%X, warm=%d, graceful=%d, status=0x%X\n",
+        resetLm, agentId, warm ? 1 : 0, graceful ? 1 : 0, status);
+#endif
+
     SM_TEST_MODE_ERR(SM_TEST_MODE_LMM_LVL1, SM_ERR_TEST)
 
     /* Return status */
@@ -752,6 +774,10 @@ int32_t LMM_SystemLmSuspend(uint32_t lmId, uint32_t agentId,
         (void) LMM_RpcNotificationTrigger(suspendLm, &trigger);
     }
 
+#ifdef DEBUG
+    printf("DEBUG: lmm/lmm_sys: LMM_SystemLmSuspend() suspend LM%d, agentId=0x%X, status=0x%X\n", suspendLm, agentId, status);
+#endif
+
     SM_TEST_MODE_ERR(SM_TEST_MODE_LMM_LVL1, SM_ERR_TEST)
 
     /* Return status */
@@ -784,6 +810,10 @@ int32_t LMM_SystemLmWake(uint32_t lmId, uint32_t agentId, uint32_t wakeLm)
         /* Notify LM via system */
         (void) LMM_RpcNotificationTrigger(wakeLm, &trigger);
     }
+
+#ifdef DEBUG
+    printf("DEBUG: lmm/lmm_sys: LMM_SystemLmWake() wake LM%d, agentId=0x%X, status=0x%X\n", wakeLm, agentId, status);
+#endif
 
     SM_TEST_MODE_ERR(SM_TEST_MODE_LMM_LVL1, SM_ERR_TEST)
 

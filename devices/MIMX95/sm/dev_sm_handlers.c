@@ -671,6 +671,9 @@ void FCCU_INT0_IRQHandler(void)
 /*--------------------------------------------------------------------------*/
 void GPC_SM_REQ_IRQHandler(void)
 {
+#ifdef DEBUG
+    printf("DEBUG: Entering %s()\n", __FUNCTION__);
+#endif
     pwr_lp_hs_mode lpHsMode;
 
     PWR_LpHandshakeModeGet(&lpHsMode);

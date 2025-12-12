@@ -1375,10 +1375,16 @@ static int32_t MONITOR_CmdLm(int32_t argc, const char * const argv[])
                 LMM_LmNameGet, SM_NUM_LM);
             if (temp_status == SM_ERR_SUCCESS)
             {
+#ifdef DEBUG
+                printf("DEBUG: lm arg %s using LM%u\n", argv[0], lm);
+#endif
                 arg++;
             }
             else
             {
+#ifdef DEBUG
+                printf("DEBUG: lm sub command %s using static LM%u\n", argv[0], s_lm);
+#endif
                 lm = s_lm;
             }
         }
