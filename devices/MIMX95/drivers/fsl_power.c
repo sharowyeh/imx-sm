@@ -572,6 +572,9 @@ void PWR_EleLpHandshakeMaskSet(uint32_t srcMixIdx, bool enableHandshake)
 /*--------------------------------------------------------------------------*/
 void PWR_LpHandshakeModeGet(pwr_lp_hs_mode *lpHsMode)
 {
+#ifdef DEBUG
+    printf("DEBUG: Entering %s()\n", __FUNCTION__);
+#endif
     /* Map MIX ID from handshake status to SoC PD */
     static uint32_t const s_gpcReqMixId2Pd[16U] =
     {

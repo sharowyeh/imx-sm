@@ -1082,6 +1082,9 @@ bool CPU_RunModeSet(uint32_t cpuIdx, uint32_t runMode)
                     /* If CPU not already stopped, reset CPU and hold */
                     if (curRunMode != CPU_RUN_MODE_STOP)
                     {
+#ifdef DEBUG
+                        printf("DEBUG: Entering %s() for CPU %u curRunMode %u -> STOP\n", __FUNCTION__, (unsigned)cpuIdx, (unsigned)curRunMode);
+#endif
                         /* Force MIX voting logic to request ON during reset */
                         rc = CPU_LpmConfigDeInit(cpuIdx, CPU_PD_LPM_ON_ALWAYS);
 

@@ -112,6 +112,7 @@ int main(int argc, const char * const argv[])
     printf("\nHello from SM (Build %lu, Commit %08lx, %s %s)\n\n",
         SM_BUILD, SM_COMMIT, SM_DATE, SM_TIME);
 
+    printf("DEBUG Version: 0.0.2_251212\n");
 #if MONITOR_MODE == 2
     printf("Press key to enter monitor mode.\n\n",
         SM_BUILD, SM_COMMIT, SM_DATE, SM_TIME);

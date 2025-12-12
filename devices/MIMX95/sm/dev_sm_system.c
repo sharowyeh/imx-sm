@@ -242,6 +242,11 @@ int32_t DEV_SM_SystemShutdown(void)
 /*--------------------------------------------------------------------------*/
 void DEV_SM_SystemShutdownRecSet(dev_sm_rst_rec_t shutdownRec)
 {
+#ifdef DEBUG
+    printf("DEBUG: DEV_SM_SystemShutdownRecSet: reason=%u errId=%u origin=LM%u valid=%d reset=%d\n",
+        shutdownRec.reason, shutdownRec.errId, shutdownRec.origin,
+        shutdownRec.valid, shutdownRec.reset);
+#endif
     int32_t status = SM_ERR_SUCCESS;
 
     SM_TEST_MODE_ERR(SM_TEST_MODE_DEV_LVL1, SM_ERR_TEST)

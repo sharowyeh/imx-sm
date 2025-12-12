@@ -410,6 +410,9 @@ void BRD_SM_ShutdownRecordLoad(dev_sm_rst_rec_t *shutdownRec)
 /*--------------------------------------------------------------------------*/
 void BRD_SM_ShutdownRecordSave(dev_sm_rst_rec_t shutdownRec)
 {
+#ifdef DEBUG
+    printf("DEBUG: BRD_SM_ShutdownRecordSave() called imx95evk\n");
+#endif
 #if BRD_SM_RST_REC_NUM > 0
     uint32_t hdr;
     const uint32_t *ePtr = &(shutdownRec.extInfo[0]);
